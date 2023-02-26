@@ -1,5 +1,7 @@
 import urllib.request
 import os
+from tkinter import filedialog
+from tkinter import *
 
 def downloadM3U(url):
     opener = urllib.request.build_opener()
@@ -32,13 +34,29 @@ if __name__ == "__main__":
                 except:
                     pass
 
-    if (os.path.exists(f"{file_name_m3u}.m3u")):
+    folder_selected = os.getcwd()
+    select_folder = ""
+    while (select_folder  not in  ["NO", "SI"] ):
+        select_folder = str(input(f"\nLa ubicación por defecto donde crear el archivo es '{folder_selected}'. ¿Desea cambiarla? [Si/No]: ")).upper()
+
+    if (select_folder == "SI"):
+        root = Tk()
+        root.withdraw()
+        folder_selected = filedialog.askdirectory()
+        if (folder_selected == ""):
+            folder_selected = os.getcwd()
+
+    if (os.path.exists(f"{folder_selected}/{file_name_m3u}.m3u")):
         i = 1
-        while os.path.exists(f"{file_name_m3u}_{i}.m3u"):
+        while os.path.exists(f"{folder_selected}/{file_name_m3u}_{i}.m3u"):
             i += 1
-        file_name_m3u = f"{file_name_m3u}_{i}.m3u"
+        file_name_m3u = f"{folder_selected}/{file_name_m3u}_{i}.m3u"
     else:
-        file_name_m3u = f"{file_name_m3u}.m3u"
+        file_name_m3u = f"{folder_selected}/{file_name_m3u}.m3u"
 
     with open(file_name_m3u, mode="w", encoding="utf-8") as f:
         f.write(content_m3u)
+
+    print(f"\nArchivo descargado con éxito en {file_name_m3u}")
+
+    input("\nPulsa ENTER para finalizar...")
